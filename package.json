@@ -1,0 +1,14 @@
+{
+    "name": "art.hypothetic.hydrogen",
+    "displayName": "Hydrogen",
+    "version": "0.1.0-rc",
+    "unity": "2020.3",
+    "description": "Export models to Hydrogen",
+    "repository": {
+      "url": "https://github.com/KhronosGroup/UnityGLTF.git"
+    },
+    "author": "Hypothetic Inc.",
+    "dependencies": {
+      "org.khronos.unitygltf": "2.11.0-rc"
+    }
+  }
