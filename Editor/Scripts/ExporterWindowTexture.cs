@@ -21,7 +21,7 @@ namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
         internal override List<string> GetAssetPaths()
         {
 
-            Texture2D[] allTextures = Resources.FindObjectsOfTypeAll<Texture2D>();
+            Texture[] allTextures = Resources.FindObjectsOfTypeAll<Texture>();
 
             // Find material textures
             Material[] allMaterials = Resources.FindObjectsOfTypeAll<Material>();
@@ -45,12 +45,12 @@ namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
 
             // exclude material textures from exportable textures
             List<string> images = new List<string>();
-            foreach (Texture2D texture in allTextures)
+            foreach (Texture texture in allTextures)
             {
                 if (!materialTextures.Contains(texture))
                 {
                     string path = AssetDatabase.GetAssetPath(texture);
-                    if (path != null && path.Length > 0 && path.StartsWith("Assets/"))
+                    if (path != null && path.Length > 0)
                     {
                         images.Add(path);
                     }
