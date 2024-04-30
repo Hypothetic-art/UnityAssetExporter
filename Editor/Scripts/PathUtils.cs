@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Hypothetic
+namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
 {
     static class PathUtils
     {

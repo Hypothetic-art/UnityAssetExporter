@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Hypothetic{
+namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
+{
     public static class SharedGUI
     {
         public static Texture2D bannerTexture = Resources.Load<Texture>("Hypo_Primary") as Texture2D;

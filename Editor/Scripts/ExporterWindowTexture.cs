@@ -1,156 +1,75 @@
-﻿using System.IO;
-using Hypothetic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Packages.art.hypothetic.hydrogen.Editor.Scripts.ExporterTreeView;
 using UnityEditor;
 using UnityEngine;
 using UnityGLTF;
 
-namespace Assets.Hypothetic_for_Unity.Scripts
+namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
 {
-    internal class ExporterWindowTexture : EditorWindow
+    internal class ExporterWindowTexture : ExporterWindow
     {
-        private bool[] modelSelections;
-        private string[] modelGuids;
-        private string[] modelPaths;
-        private Vector2 scrollViewPosition;
-
         [MenuItem("Hypothetic/Export Textures")]
         public static void ShowWindow()
         {
             GetWindow<ExporterWindowTexture>("Export Textures");
         }
 
-        private void OnEnable()
+
+        internal override List<string> GetAssetPaths()
         {
-            RefreshTexturelList();
-        }
 
-        private void RefreshTexturelList()
-        {
-            // Get all model assets in the project
-            modelGuids = AssetDatabase.FindAssets("t:Texture");
-            modelPaths = new string[modelGuids.Length];
-            modelSelections = new bool[modelGuids.Length];
+            Texture2D[] allTextures = Resources.FindObjectsOfTypeAll<Texture2D>();
 
-            for (int i = 0; i < modelGuids.Length; i++)
+            // Find material textures
+            Material[] allMaterials = Resources.FindObjectsOfTypeAll<Material>();
+            HashSet<Texture> materialTextures = new HashSet<Texture>();
+
+            foreach (Material material in allMaterials)
             {
-                string path = AssetDatabase.GUIDToAssetPath(modelGuids[i]);
-                modelPaths[i] = path;
-            }
-        }
+                // Get all texture property names from the shader
+                string[] texturePropertyNames = material.GetTexturePropertyNames();
 
-        private void OnGUI()
-        {
-            SharedGUI.displayHeader();
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Export"))
-            {
-                ExportSelectedTextures();
-            }
-            EditorGUILayout.EndHorizontal();
-
-
-            // Select All and Deselect All buttons
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Select All"))
-            {
-                SelectAllTextures(true);
-            }
-            if (GUILayout.Button("Deselect All"))
-            {
-                SelectAllTextures(false);
-            }
-            EditorGUILayout.EndHorizontal();
-
-            GUILayout.Space(10);
-
-            GUILayout.Label("List of Textures", EditorStyles.boldLabel);
-            // Display checkboxes for each model
-            scrollViewPosition = EditorGUILayout.BeginScrollView(scrollViewPosition);
-            for (int i = 0; i < modelPaths.Length; i++)
-            {
-                modelSelections[i] = EditorGUILayout.ToggleLeft(modelPaths[i], modelSelections[i]);
-            }
-            EditorGUILayout.EndScrollView();
-        }
-
-        private void SelectAllTextures(bool select)
-        {
-            for (int i = 0; i < modelSelections.Length; i++)
-            {
-                modelSelections[i] = select;
-            }
-        }
-
-        private void ExportSelectedTextures()
-        {
-            string exportDestination = EditorUtility.OpenFolderPanel("Choose export destination", "", "");
-            Debug.Log(exportDestination);
-            if (string.IsNullOrEmpty(exportDestination))
-            {
-                Debug.LogError(exportDestination);
-                return;
-            }
-
-            for (int i = 0;i < modelSelections.Length;i++)
-            {
-                Debug.Log(modelSelections[i]);
-                if (!modelSelections[i])
+                // Print the names of all textures used by the material
+                foreach (string propertyName in texturePropertyNames)
                 {
-                    continue;
-                }
-                Debug.Log(modelPaths[i]);
-                GameObject modelPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(modelPaths[i]);
-                if (modelPrefab != null)
-                {
-                    Debug.Log(modelPrefab.name);
-                    GameObject instantiatedTexture = PrefabUtility.InstantiatePrefab(modelPrefab) as GameObject;
-                    if (instantiatedTexture != null)
+                    Texture texture = material.GetTexture(propertyName);
+                    if (texture != null)
                     {
-                        Debug.Log(instantiatedTexture.name);
-                        Transform rootTransform = instantiatedTexture.transform.root;
-                        Debug.Log("Root transform of " + modelPaths[i] + ": " + rootTransform.name);
-
-                        Transform[] rootTransforms = { rootTransform };
-
-                        Export(rootTransforms, true, exportDestination, Path.GetFileNameWithoutExtension(modelPaths[i]));
-
-                        DestroyImmediate(instantiatedTexture);
+                        materialTextures.Add(texture);
                     }
                 }
             }
-            EditorUtility.RevealInFinder(exportDestination);
-        }
 
-        private static void Export(Transform[] transforms, bool binary, string exportDestination, string sceneName)
-        {
-            var settings = GLTFSettings.GetOrCreateSettings();
-            var exportOptions = new ExportContext(settings) { TexturePathRetriever = RetrieveTexturePath };
-            var exporter = new GLTFSceneExporter(transforms, exportOptions);
-
-            var invokedByShortcut = Event.current?.type == EventType.KeyDown;
-
-            var ext = binary ? ".glb" : ".gltf";
-            var resultFile = GLTFSceneExporter.GetFileName(exportDestination, sceneName, ext);
-            settings.SaveFolderPath = exportDestination;
-            if (binary)
-                exporter.SaveGLB(exportDestination, sceneName);
-            else
-                exporter.SaveGLTFandBin(exportDestination, sceneName);
-
-            Debug.Log("Exported to " + resultFile);
-        }
-
-        public static string RetrieveTexturePath(Texture texture)
-        {
-            var path = AssetDatabase.GetAssetPath(texture);
-            // texture is a subasset
-            if (AssetDatabase.GetMainAssetTypeAtPath(path) != typeof(Texture2D))
+            // exclude material textures from exportable textures
+            List<string> images = new List<string>();
+            foreach (Texture2D texture in allTextures)
             {
-                var ext = Path.GetExtension(path);
-                if (string.IsNullOrWhiteSpace(ext)) return texture.name + ".png";
-                path = path.Replace(ext, "-" + texture.name + ext);
+                if (!materialTextures.Contains(texture))
+                {
+                    string path = AssetDatabase.GetAssetPath(texture);
+                    if (path != null && path.Length > 0 && path.StartsWith("Assets/"))
+                    {
+                        images.Add(path);
+                    }
+                }
             }
-            return path;
+
+            return images;
+        }
+
+        internal override void ExportItem(string assetPath, string dstDirPath)
+        {
+            string basename = Path.GetFileName(assetPath);
+            string ext = Path.GetExtension(assetPath).ToLower();
+            Debug.Log(ext);
+            string dst = Path.Join(dstDirPath, basename);
+            File.Copy(assetPath, dst, false);
+            //string dst = Path.Join(exportDestination, Path.ChangeExtension(basename, "png"));
+            //Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            //File.WriteAllBytes(dst, texture.EncodeToPNG());
         }
     }
 }
