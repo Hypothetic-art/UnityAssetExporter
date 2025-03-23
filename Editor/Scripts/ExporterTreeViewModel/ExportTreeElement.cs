@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Packages.art.hypothetic.hydrogen.Editor.Scripts.ExporterTreeView
+namespace Packages.art.hypothetic.unity.Editor.Scripts.ExporterTreeView
 {
     public enum ExportTreeElementType
     {

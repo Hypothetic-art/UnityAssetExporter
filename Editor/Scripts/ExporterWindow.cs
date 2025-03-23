@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Packages.art.hypothetic.hydrogen.Editor.Scripts.ExporterTreeView;
+using Packages.art.hypothetic.unity.Editor.Scripts.ExporterTreeView;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.IMGUI.Controls;
@@ -9,7 +9,7 @@ using UnityEngine;
 using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 using SearchField = UnityEditor.IMGUI.Controls.SearchField;
 
-namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
+namespace Packages.art.hypothetic.unity.Editor.Scripts
 {
     internal abstract class ExporterWindow : EditorWindow
     {

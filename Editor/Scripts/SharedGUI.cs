@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
+namespace Packages.art.hypothetic.unity.Editor.Scripts
 {
     public static class SharedGUI
     {

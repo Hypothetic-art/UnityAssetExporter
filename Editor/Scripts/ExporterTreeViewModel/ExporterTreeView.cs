@@ -6,7 +6,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Packages.art.hypothetic.hydrogen.Editor.Scripts.ExporterTreeView
+namespace Packages.art.hypothetic.unity.Editor.Scripts.ExporterTreeView
 {
     internal class ExporterTreeView : TreeViewWithTreeModel<ExportTreeElement>
     {

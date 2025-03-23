@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Packages.art.hypothetic.hydrogen.Editor.Scripts.ExporterTreeView;
+using Packages.art.hypothetic.unity.Editor.Scripts.ExporterTreeView;
 using UnityEditor;
 using UnityEngine;
 using UnityGLTF;
 
-namespace Packages.art.hypothetic.hydrogen.Editor.Scripts
+namespace Packages.art.hypothetic.unity.Editor.Scripts
 {
     internal class ExporterWindowPrefab : ExporterWindow
     {

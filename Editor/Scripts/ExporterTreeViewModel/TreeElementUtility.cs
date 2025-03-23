@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEditor;
 
 
-namespace Packages.art.hypothetic.hydrogen.Editor.Scripts.ExporterTreeView
+namespace Packages.art.hypothetic.unity.Editor.Scripts.ExporterTreeView
 {
 
 	// TreeElementUtility and TreeElement are useful helper classes for backend tree data structures.
