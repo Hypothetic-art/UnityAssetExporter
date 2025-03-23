@@ -1,9 +1,9 @@
 {
     "name": "art.hypothetic.unity",
-    "displayName": "Hydrogen",
+    "displayName": "Hypothetic",
     "version": "0.1.0-rc",
     "unity": "2020.3",
-    "description": "Export models to Hydrogen",
+    "description": "Batch Export models and textures",
     "repository": {
       "url": "https://github.com/KhronosGroup/UnityGLTF.git"
     },
